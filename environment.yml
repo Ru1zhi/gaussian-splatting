@@ -13,6 +13,7 @@ dependencies:
   - torchvision=0.13.1
   - tqdm
   - pip:
+    - scipy
     - opencv-python==4.8.1.78
     - mediapy==1.0.0
     - submodules/diff-gaussian-rasterization
