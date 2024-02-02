@@ -88,6 +88,10 @@ def training(dataset, opt, pipe, testing_iterations, saving_iterations, checkpoi
 
         # Loss
         gt_image = viewpoint_cam.original_image.cuda()
+        if viewpoint_cam.mask is not None:
+            mask = viewpoint_cam.mask.cuda()
+            image = image * mask
+            gt_image = gt_image * mask
         Ll1 = l1_loss(image, gt_image)
         loss = (1.0 - opt.lambda_dssim) * Ll1 + opt.lambda_dssim * (1.0 - ssim(image, gt_image))
         loss.backward()

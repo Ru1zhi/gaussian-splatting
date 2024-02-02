@@ -45,10 +45,15 @@ def loadCam(args, id, cam_info, resolution_scale):
 
     if resized_image_rgb.shape[1] == 4:
         loaded_mask = resized_image_rgb[3:4, ...]
+    
+    mask = None
+    if cam_info.mask is not None:
+        mask = PILtoTorch(cam_info.mask, resolution)
+        mask = 1. - mask    # mask=1表示动态物体，需要去掉，这里反转一下，让mask=0表示动态物体，计算损失之前直接乘上mask就行了
 
     return Camera(colmap_id=cam_info.uid, R=cam_info.R, T=cam_info.T, 
                   FoVx=cam_info.FovX, FoVy=cam_info.FovY, 
-                  image=gt_image, gt_alpha_mask=loaded_mask,
+                  image=gt_image, mask=mask, gt_alpha_mask=loaded_mask,
                   image_name=cam_info.image_name, uid=id, data_device=args.data_device)
 
 def cameraList_from_camInfos(cam_infos, resolution_scale, args):
